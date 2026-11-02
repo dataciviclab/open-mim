@@ -4,44 +4,70 @@
 
 - ente: Ministero dell'Istruzione e del Merito (MIM)
 - pagina ufficiale: <https://dati.istruzione.it/opendata/opendata/catalogo/>
-- dataset: `DOCTIT` — *Docenti a tempo indeterminato. Scuola statale*
-- download: <https://dati.istruzione.it/opendata/opendata/catalogo/elements1/?area=Personale%20Scuola>
 - licenza: IODL 2.0 (Italian Open Data License)
 - `source_id` in source-observatory: `mim_opendata`
 
-## Serie storica (CSV)
+Base URL dei file: `https://dati.istruzione.it/opendata/opendata/catalogo/elements1/`
 
-Base URL: `https://dati.istruzione.it/opendata/opendata/catalogo/elements1/`
+## Dataset e file
 
-| Anno (a.s.) | File |
+### `mim-docenti-titolari` — `DOCTIT`
+
+Docenti a tempo indeterminato, scuola statale, per provincia. Anni di run =
+anno di inizio a.s. (2016 → a.s. 2016/17).
+
+| Anno | File |
 |---|---|
-| 2016 (2016/17) | `DOCTIT20161720170831.csv` |
-| 2017 (2017/18) | `DOCTIT20171820180831.csv` |
-| 2018 (2018/19) | `DOCTIT20181920190831.csv` |
-| 2019 (2019/20) | `DOCTIT20192020200831.csv` |
-| 2020 (2020/21) | `DOCTIT20202120210831.csv` |
-| 2021 (2021/22) | `DOCTIT20212220220831.csv` |
-| 2022 (2022/23) | `DOCTIT20222320230831.csv` |
-| 2023 (2023/24) | `DOCTIT20232420240831.csv` |
-| 2024 (2024/25) | `DOCTIT20242520250831.csv` |
+| 2016 | `DOCTIT20161720170831.csv` |
+| 2017 | `DOCTIT20171820180831.csv` |
+| 2018 | `DOCTIT20181920190831.csv` |
+| 2019 | `DOCTIT20192020200831.csv` |
+| 2020 | `DOCTIT20202120200901.csv` |
+| 2021 | `DOCTIT20212220220831.csv` |
+| 2022 | `DOCTIT20222320230831.csv` |
+| 2023 | `DOCTIT20232420240831.csv` |
+| 2024 | `DOCTIT20242520250831.csv` |
 
-L'a.s. 2015/16 è pubblicato con prefisso diverso (`AS1516DOCTIT20160831.csv`)
-ed è escluso dal contratto: da valutare come source aggiuntiva.
+### `mim-alunni-corso-eta` — `ALUCORSOETASTA`
+
+Alunni per ordine, anno di corso e fascia d'età, scuola statale. Anni di run =
+anno di pubblicazione (fine a.s.).
+
+| Anno | File |
+|---|---|
+| 2016–2025 | `ALUCORSOETASTA20151620160831.csv` … `ALUCORSOETASTA20242520250831.csv` |
+
+### `mim-scuola-infanzia` — `INFANZIASTRACITSTA`
+
+Bambini italiani e non italiani nella scuola dell'infanzia statale.
+
+| Anno | File |
+|---|---|
+| 2018–2025 | `INFANZIASTRACITSTA20171820180831.csv` … `INFANZIASTRACITSTA20242520250831.csv` |
+
+2017 non disponibile: il server restituisce HTML invece del CSV.
+
+### `support/mim-anagrafica-scuole-statali` — `SCUANAGRAFESTAT`
+
+Anagrafica degli edifici scolastici statali (chiave `CODICESCUOLA`).
+
+| Anno | File |
+|---|---|
+| 2024 | `SCUANAGRAFESTAT20242520250831.csv` |
 
 ## Versioning
 
-- logica versioni: un file per anno scolastico, pubblicato a fine agosto
-  dell'anno successivo (data nel nome file, es. `20250831`)
-- campi che cambiano nel tempo: la serie `DOCTIT` è stabile dal 2016/17;
-  i supplenti (`DOCSUP`) hanno cambiato schema nel 2023/24 (`DOCSUPXXV`)
+- un file per anno scolastico, pubblicato a fine agosto dell'anno successivo
+- la mappa `url_suffix_by_year` in ogni `dataset.yml` elenca esplicitamente il
+  suffisso per anno: i nomi file non seguono un pattern unico
+- `DOCTIT` 2020/21 è l'eccezione nota: `...20200901.csv` (non `...20210831.csv`)
 
 ## Note su qualità e pubblicazione
 
 - CSV con delimitatore `,`, header, encoding UTF-8
-- nessun valore mancante sulle colonne usate nel 2024/25
 - valori testuali in maiuscolo (`PROVINCIA`, `ORDINESCUOLA`, `FASCIAETA`)
-- la provincia è una denominazione, non un codice: nessun join implicito a
-  codici ISTAT
+- la provincia è una denominazione, non un codice ISTAT
+- l'anagrafica 2024/25 è completa (50.515 scuole, `CODICESCUOLA` univoco)
 
 ## Accesso alternativo
 

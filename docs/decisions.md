@@ -57,3 +57,29 @@ Qui registriamo scelte tecniche che cambiano il significato dei dati.
 - impatto: in CI `dataset-config-check-reusable` tratta il preflight come
   non-blocking; in locale `make check` esce 1 e va letto come avviso noto.
   Quando il toolkit risolverà i suffissi in preflight, rimuovere questa deroga.
+
+## D-007 — Migrazione dei dataset MIM da dataset-incubator
+
+- decisione: `mim-alunni-corso-eta`, `mim-scuola-infanzia` e il support
+  `mim-anagrafica-scuole-statali` sono migrati da `dataset-incubator`
+  (`candidates/` + `support_datasets/`) a questo repo (`datasets/` + `support/`).
+- motivo: DI è un repo di intake; a dataset maturi serve un repo dataset
+  dedicato, con registry e pipeline propri. I nomi dataset e gli slug mart
+  restano invariati, quindi i path GCS pubblicati non cambiano.
+- impatto: il support passa da `../../support_datasets/...` a
+  `../../support/...`; aggiunto `output.artifacts: standard` e completate le
+  validazioni del support (prima vuote). La rimozione da DI avviene nello
+  stesso giro: directory eliminate e `registry/registry.json` ripulito dalle
+  entry MIM (la pipeline lo rigenererà al prossimo run).
+
+## D-008 — Anni di run non omogenei tra dataset
+
+- decisione: non si armonizza in questa migrazione la semantica di
+  `dataset.years`.
+- motivo: `mim-docenti-titolari` usa l'anno di **inizio** a.s.
+  (2016 → a.s. 2016/17); `mim-alunni-corso-eta` e `mim-scuola-infanzia` usano
+  l'anno di **pubblicazione** (fine a.s.: 2016 → file `...20160831.csv`).
+  Cambiarla ora modificherebbe i path degli artifact pubblicati.
+- impatto: i `dataset.years` non sono confrontabili tra dataset; la colonna
+  `anno` / `anno_scolastico` nel clean è la fonte corretta per i confronti.
+  Da rivalutare se si crea un `compose/` che unisce più dataset.
