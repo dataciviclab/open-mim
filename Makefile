@@ -11,6 +11,7 @@ TOOLKIT ?= toolkit
 # I path relativi in dataset.yml sono risolti rispetto alla dir del file.
 
 DATASETS := $(shell find datasets -name dataset.yml 2>/dev/null | sort)
+COMPOSE  := $(shell find compose -name dataset.yml 2>/dev/null | sort)
 SUPPORT  := $(shell find support -name dataset.yml 2>/dev/null | sort)
 
 # --- Support seeds (eseguire prima dei dataset principali) ------------------
@@ -26,7 +27,7 @@ seeds:
 
 .PHONY: run
 run:
-	@for f in $(DATASETS); do \
+	@for f in $(DATASETS) $(COMPOSE); do \
 		echo "=== $$f ==="; \
 		$(TOOLKIT) run --config "$$f" || exit 1; \
 	done
@@ -38,7 +39,7 @@ run-all: seeds run
 
 .PHONY: check
 check:
-	@for f in $(SUPPORT) $(DATASETS); do \
+	@for f in $(SUPPORT) $(DATASETS) $(COMPOSE); do \
 		echo "→ $$f"; \
 		$(TOOLKIT) run preflight --config "$$f" > /dev/null 2>&1 || exit 1; \
 	done

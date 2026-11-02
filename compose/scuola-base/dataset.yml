@@ -1,0 +1,56 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "scuola_base"
+  source_id: "dataciviclab_composite"
+  tags: [istruzione, scuola, compose, alunni, docenti, ata, territorio]
+  category: istruzione
+  description: "Base analitica della scuola statale: alunni, docenti e ATA per provincia e ordine scolastico, con rapporti e quote."
+  # Anno di run: il mart aggrega tutti gli anni dichiarati nei support.
+  years: [2024]
+  time_coverage: {start_year: 2016, end_year: 2024}
+
+support:
+  # Nota: support `file` sui clean invece di `dataset`. Il support `dataset`
+  # richiede che ogni mart del support esista nella dir dell'anno, ma i mart
+  # multi-anno (es. mart_trend_ordine) stanno alla root del dataset.
+  # Vedi docs/decisions.md (D-011) e compose/scuola-base/notes.md.
+  - name: alunni
+    type: file
+    path: "../../out/data/clean/mim_alunni_corso_eta"
+  - name: docenti
+    type: file
+    path: "../../out/data/clean/mim_docenti_titolari"
+  - name: ata
+    type: file
+    path: "../../out/data/clean/mim_personale_ata"
+  - name: infanzia
+    type: file
+    path: "../../out/data/clean/mim_scuola_infanzia"
+
+mart:
+  tables:
+    - name: "mart_scuola_ordine"
+      sql: "sql/mart_scuola_ordine.sql"
+    - name: "mart_scuola_provincia"
+      sql: "sql/mart_scuola_provincia.sql"
+  required_tables:
+    - "mart_scuola_ordine"
+    - "mart_scuola_provincia"
+  validate:
+    table_rules:
+      mart_scuola_ordine:
+        required_columns: [anno, provincia, ordine_scuola, alunni, docenti_titolari, rapporto_alunni_docenti, quota_femminile_docenti_pct, quota_docenti_over54_pct, n_scuole]
+        primary_key: [anno, provincia, ordine_scuola]
+        min_rows: 100
+      mart_scuola_provincia:
+        required_columns: [anno, provincia, alunni, docenti_titolari, ata_titolari, rapporto_alunni_docenti, rapporto_alunni_personale]
+        primary_key: [anno, provincia]
+        min_rows: 100
+
+validation:
+  fail_on_error: true
+
+output:
+  artifacts: "standard"

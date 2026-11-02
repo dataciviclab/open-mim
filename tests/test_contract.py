@@ -43,6 +43,21 @@ def _iter_dataset_configs() -> list[Path]:
     return configs
 
 
+EXPECTED_DATASETS = {
+    "mim-alunni-corso-eta",
+    "mim-docenti-titolari",
+    "mim-personale-ata",
+    "mim-scuola-infanzia",
+}
+EXPECTED_SUPPORT = {"mim-anagrafica-scuole-statali"}
+EXPECTED_COMPOSE = {"scuola-base"}
+
+
+def _iter_compose_configs() -> list[Path]:
+    base = REPO_ROOT / "compose"
+    return sorted(base.glob("*/dataset.yml")) if base.exists() else []
+
+
 @pytest.fixture(scope="module")
 def dataset_configs() -> list[Path]:
     configs = _iter_dataset_configs()
@@ -168,6 +183,70 @@ def test_required_tables_and_rules_match_declared_marts(dataset_configs: list[Pa
 @pytest.mark.contract
 def test_dataset_docs_present(dataset_configs: list[Path]) -> None:
     for cfg in dataset_configs:
+        base = cfg.parent
+        rel = str(base.relative_to(REPO_ROOT))
+        assert (base / "README.md").is_file(), f"{rel}: manca README.md"
+        assert (base / "notes.md").is_file(), f"{rel}: manca notes.md"
+
+
+@pytest.mark.contract
+def test_base_package_present() -> None:
+    datasets = {p.name for p in (REPO_ROOT / "datasets").iterdir() if p.is_dir()}
+    support = {p.name for p in (REPO_ROOT / "support").iterdir() if p.is_dir()}
+    compose = {p.name for p in (REPO_ROOT / "compose").iterdir() if p.is_dir()}
+    assert datasets == EXPECTED_DATASETS, f"Dataset inattesi: {datasets ^ EXPECTED_DATASETS}"
+    assert support == EXPECTED_SUPPORT, f"Support inattesi: {support ^ EXPECTED_SUPPORT}"
+    assert compose == EXPECTED_COMPOSE, f"Compose inattesi: {compose ^ EXPECTED_COMPOSE}"
+
+
+@pytest.fixture(scope="module")
+def compose_configs() -> list[Path]:
+    configs = _iter_compose_configs()
+    assert configs, "Il repo deve dichiarare almeno un compose in compose/"
+    return configs
+
+
+@pytest.mark.contract
+def test_compose_declares_minimum_contract(compose_configs: list[Path]) -> None:
+    for cfg in compose_configs:
+        dataset = yaml.safe_load(cfg.read_text(encoding="utf-8"))
+        rel = str(cfg.relative_to(REPO_ROOT))
+        assert dataset.get("schema_version") == 1, f"{rel}: schema_version != 1"
+        assert "root" in dataset, f"{rel}: manca root"
+        assert dataset["dataset"].get("name"), f"{rel}: manca dataset.name"
+        assert isinstance(dataset["dataset"].get("years"), list) and dataset["dataset"]["years"], f"{rel}: years non valido"
+        assert dataset.get("support"), f"{rel}: compose senza support"
+        for source in dataset["support"]:
+            assert source.get("name"), f"{rel}: support senza name"
+            assert source.get("type") in {"dataset", "codelist", "file", "external"}, f"{rel}: support.type non valido"
+            if source["type"] == "dataset":
+                assert source.get("config"), f"{rel}: support dataset senza config"
+            if source["type"] == "file":
+                assert source.get("path"), f"{rel}: support file senza path"
+        assert dataset["mart"]["tables"], f"{rel}: manca mart.tables"
+        assert dataset["mart"].get("required_tables"), f"{rel}: manca mart.required_tables"
+        assert dataset["mart"]["validate"].get("table_rules"), f"{rel}: manca mart.validate.table_rules"
+        assert dataset["validation"]["fail_on_error"] is True, f"{rel}: fail_on_error deve essere true"
+        assert dataset["output"]["artifacts"] in {"minimal", "standard", "debug"}, f"{rel}: artifacts non valido"
+
+
+@pytest.mark.contract
+def test_compose_sql_and_support_exist(compose_configs: list[Path]) -> None:
+    for cfg in compose_configs:
+        dataset = yaml.safe_load(cfg.read_text(encoding="utf-8"))
+        base = cfg.parent
+        rel = str(base.relative_to(REPO_ROOT))
+        for table in dataset["mart"]["tables"]:
+            assert table.get("name") and table.get("sql"), f"{rel}: mart senza name/sql"
+            assert (base / table["sql"]).is_file(), f"{rel}: manca SQL {table['sql']}"
+        for source in dataset["support"]:
+            if source.get("type") == "dataset":
+                assert (base / source["config"]).resolve().is_file(), f"{rel}: support config inesistente {source['config']}"
+
+
+@pytest.mark.contract
+def test_compose_docs_present(compose_configs: list[Path]) -> None:
+    for cfg in compose_configs:
         base = cfg.parent
         rel = str(base.relative_to(REPO_ROOT))
         assert (base / "README.md").is_file(), f"{rel}: manca README.md"

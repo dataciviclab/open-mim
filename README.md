@@ -23,14 +23,16 @@ Le domande secondarie emergono in Discussions e diventano issue operative.
 | Slug | Cosa contiene | Anni | Stato |
 |---|---|---|---|
 | [`datasets/mim-docenti-titolari`](datasets/mim-docenti-titolari/) | Docenti a tempo indeterminato per provincia, ordine scolastico, tipo posto e fascia d'età | 2016/17–2024/25 | alpha |
+| [`datasets/mim-personale-ata`](datasets/mim-personale-ata/) | Personale ATA a tempo indeterminato per provincia e fascia d'età | 2016/17–2024/25 | alpha |
 | [`datasets/mim-alunni-corso-eta`](datasets/mim-alunni-corso-eta/) | Alunni per ordine, anno di corso ed età, per singola scuola e territorio | 2016/17–2024/25 | alpha |
 | [`datasets/mim-scuola-infanzia`](datasets/mim-scuola-infanzia/) | Bambini italiani e non italiani nella scuola dell'infanzia, per scuola e territorio | 2017/18–2024/25 | alpha |
 | [`support/mim-anagrafica-scuole-statali`](support/mim-anagrafica-scuole-statali/) | Anagrafica scuole statali: chiave di join geografico per gli altri dataset | 2024/25 | support |
+| [`compose/scuola-base`](compose/scuola-base/) | Base analitica: alunni + docenti + ATA per provincia/ordine, con rapporti e quote | 2016/17–2024/25 | alpha |
 
 Roadmap (non ancora in contratto):
 
-- `mim-personale-ata` — ATA titolari e supplenti
 - `mim-docenti-supplenti` — supplenti per tipo supplenza e contratto
+- `mim-personale-ata-supplenti` — ATA supplenti
 - edilizia scolastica e bilancio integrato delle scuole
 
 Definizioni dettagliate: [`docs/data_dictionary.md`](docs/data_dictionary.md)

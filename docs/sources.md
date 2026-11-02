@@ -28,6 +28,17 @@ anno di inizio a.s. (2016 → a.s. 2016/17).
 | 2023 | `DOCTIT20232420240831.csv` |
 | 2024 | `DOCTIT20242520250831.csv` |
 
+### `mim-personale-ata` — `ATATIT`
+
+Personale ATA a tempo indeterminato, scuola statale, per provincia e fascia
+d'età. Anni di run = anno di inizio a.s. (2016 → a.s. 2016/17).
+
+| Anno | File |
+|---|---|
+| 2016–2024 | `ATATIT20161720170831.csv` … `ATATIT20242520250831.csv` |
+
+Eccezione: 2020/21 → `ATATIT20202120200901.csv` (non `...20210831.csv`).
+
 ### `mim-alunni-corso-eta` — `ALUCORSOETASTA`
 
 Alunni per ordine, anno di corso e fascia d'età, scuola statale. Anni di run =

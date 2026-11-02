@@ -1,0 +1,91 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "mim_personale_ata"
+  source_id: "mim_opendata"
+  tags: [istruzione, mim, ata, personale-scuola, genere, territorio]
+  category: istruzione
+  years: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  time_coverage: {start_year: 2016, end_year: 2024}
+
+raw:
+  output_policy: overwrite
+  sources:
+    - name: "mim_atatit_csv"
+      type: "http_file"
+      client:
+        timeout: 60
+        retries: 2
+      args:
+        url: "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/ATATIT"
+        filename: "ATATIT_{year}.csv"
+        url_suffix_by_year:
+          2016: "20161720170831.csv"
+          2017: "20171820180831.csv"
+          2018: "20181920190831.csv"
+          2019: "20192020200831.csv"
+          2020: "20202120200901.csv"
+          2021: "20212220220831.csv"
+          2022: "20222320230831.csv"
+          2023: "20232420240831.csv"
+          2024: "20242520250831.csv"
+      primary: true
+
+clean:
+  sql: "sql/clean.sql"
+  read:
+    source: auto
+    mode: latest
+    delim: ","
+    encoding: "utf-8"
+    header: true
+  required_columns:
+    - anno
+    - anno_scolastico
+    - provincia
+    - fascia_eta
+    - ata_maschile
+    - ata_femminile
+    - ata_totale
+  validate:
+    not_null: [anno, provincia, fascia_eta]
+    min_rows: 100
+    primary_key: [anno, provincia, fascia_eta]
+
+mart:
+  tables:
+    # Sintesi territoriale per provincia (anno corrente)
+    - name: "mart_sintesi_provincia"
+      sql: "sql/mart_sintesi_provincia.sql"
+    # Serie storica multi-anno del personale ATA
+    - name: "mart_trend_anno"
+      sql: "sql/mart_trend_anno.sql"
+      years: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    # Invecchiamento del personale ATA per fascia d'età
+    - name: "mart_fasce_eta"
+      sql: "sql/mart_fasce_eta.sql"
+  required_tables:
+    - "mart_sintesi_provincia"
+    - "mart_trend_anno"
+    - "mart_fasce_eta"
+  validate:
+    table_rules:
+      mart_sintesi_provincia:
+        required_columns: [anno, provincia, ata_totale, quota_femminile_pct, quota_nazionale_pct]
+        primary_key: [anno, provincia]
+        min_rows: 100
+      mart_trend_anno:
+        required_columns: [anno, ata_totale, delta_ata, variazione_pct]
+        primary_key: [anno]
+        min_rows: 9
+      mart_fasce_eta:
+        required_columns: [anno, fascia_eta, ata_totale, quota_pct]
+        primary_key: [anno, fascia_eta]
+        min_rows: 3
+
+validation:
+  fail_on_error: true
+
+output:
+  artifacts: "standard"

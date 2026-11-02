@@ -6,6 +6,7 @@ on:
     paths:
       - "datasets/**"
       - "support/**"
+      - "compose/**"
   schedule:
     - cron: "0 6 1 * *"
   workflow_dispatch: {}
@@ -21,7 +22,7 @@ jobs:
     with:
       repo-slug: "${{ github.event.repository.name }}"
       run-command: "make run-all"
-      detect-paths: "datasets"
+      detect-paths: "datasets support compose"
     permissions:
       contents: write
       pull-requests: write

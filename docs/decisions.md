@@ -83,3 +83,48 @@ Qui registriamo scelte tecniche che cambiano il significato dei dati.
 - impatto: i `dataset.years` non sono confrontabili tra dataset; la colonna
   `anno` / `anno_scolastico` nel clean è la fonte corretta per i confronti.
   Da rivalutare se si crea un `compose/` che unisce più dataset.
+
+## D-009 — Pacchetto base: scuole, studenti, personale
+
+- decisione: il pacchetto base del repo è formato da anagrafica scuole
+  (support), alunni, docenti titolari, personale ATA e scuola dell'infanzia,
+  più il compose `scuola-base`.
+- motivo: copre i tre pilastri (scuole, studenti, personale) e permette una
+  prima uscita civica verificabile (rapporto alunni/docenti e
+  alunni/personale per provincia) senza aggiungere fonti.
+- impatto: i supplenti (`DOCSUP`/`ATASUP`) e i domini edilizia/bilancio/PON
+  restano fuori dal base (v0.2/v0.3).
+
+## D-010 — Allineamento anni nel compose
+
+- decisione: nel compose `scuola-base` l'anno è sempre l'**inizio** dell'anno
+  scolastico; per gli alunni è derivato da `anno_scolastico` (`201617` → `2016`).
+- motivo: i tre dataset usano convenzioni diverse (D-008); senza derivazione il
+  join alunni/docenti sarebbe sfalsato di un anno.
+- impatto: il compose filtra `anno BETWEEN 2016 AND 2024`, escludendo il
+  2015/16 degli alunni che non ha controparte docenti/ATA.
+
+## D-011 — Compose con support `file` (limite del toolkit)
+
+- decisione: `compose/scuola-base` dichiara i dataset di input come support
+  `file` sulle directory clean, non come support `dataset`.
+- motivo: l'ensure del support `dataset` cerca ogni tabella mart nella dir
+  dell'anno, ma i mart multi-anno (`mart_trend_ordine`, `mart_trend_anno`)
+  sono scritti alla root del dataset. Il check fallisce con
+  "Support dataset output mancante". Il limite è nel toolkit (anche su `main`).
+- impatto: il compose legge `<dir>/*/*_clean.parquet`; il Makefile esegue i
+  dataset prima del compose. Da riportare a support `dataset` quando il
+  toolkit gestirà i mart multi-anno nell'ensure.
+
+## D-012 — Infanzia nel compose e nomi provincia storici
+
+- decisione: il compose include l'infanzia (da `mim-scuola-infanzia`) come
+  quarto ordine, con `bambini_totale` come `alunni`.
+- motivo: `mim-alunni-corso-eta` copre solo primaria e secondaria; senza
+  infanzia il totale docenti del compose perdeva ~85k docenti/anno
+  (il 10-11%).
+- impatto: nel 2016/17 l'infanzia non esiste (serie dal 2017/18), quindi le
+  righe infanzia hanno `alunni` NULL e il totale aggregato 2016/17 non è
+  confrontabile. Inoltre 9 nomi provincia storici nei docenti (2016-17, ~2,7%)
+  non coincidono con l'anagrafica 2024/25: per quelle province `alunni` è NULL.
+  Una mappatura province è rinviata a v0.2.
