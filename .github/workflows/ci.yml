@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dataciviclab/.github/actions/python-setup@main
+        with:
+          python-version: ${{ matrix.python-version }}
+          install-extras: "dev"
+      - uses: dataciviclab/.github/actions/python-ci@main
+        with:
+          lint_paths: "tests/ datasets"
+          mypy_paths: ""
+          test_dir: "tests"
+          pytest_args: "-q"
+
+  validate-config:
+    uses: dataciviclab/.github/.github/workflows/dataset-config-check-reusable.yml@main
+    with:
+      globs: "datasets"
+      years: "from-config"

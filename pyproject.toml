@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dataciviclab-open-mim"
+version = "0.1.0"
+description = "Docenti e personale della scuola statale italiana (MIM)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+authors = [{ name = "DataCivicLab" }]
+
+# duckdb: dipendenza runtime (usata dai test SQL e dal motore).
+# toolkit è CLI esterno → vive nell'extra `pipeline`.
+# lab-connectors arriva transitivamente da toolkit (non si dichiara).
+dependencies = [
+    "duckdb>=1.5.3,<2",
+]
+
+# Nessun package Python: il repo è dati + SQL + script.
+# Esplicito per evitare il flat-layout discovery di setuptools.
+[tool.setuptools]
+packages = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+]
+pipeline = [
+    "dataciviclab-toolkit @ git+https://github.com/dataciviclab/toolkit.git",
+]
+
+[project.urls]
+Home = "https://github.com/dataciviclab/open-mim"
+
+[tool.toolkit.extends]
+source_id = "mim_opendata"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
