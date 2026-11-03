@@ -47,6 +47,7 @@ EXPECTED_DATASETS = {
     "mim-alunni-corso-eta",
     "mim-docenti-titolari",
     "mim-personale-ata",
+    "mim-personale-ata-supplenti",
     "mim-scuola-infanzia",
 }
 EXPECTED_SUPPORT = {"mim-anagrafica-scuole-statali"}

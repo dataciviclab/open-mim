@@ -128,3 +128,15 @@ Qui registriamo scelte tecniche che cambiano il significato dei dati.
   confrontabile. Inoltre 9 nomi provincia storici nei docenti (2016-17, ~2,7%)
   non coincidono con l'anagrafica 2024/25: per quelle province `alunni` è NULL.
   Una mappatura province è rinviata a v0.2.
+
+## D-013 — v0.2: supplenti
+
+- decisione: la fase 2 parte da `mim-personale-ata-supplenti` (ATASUP),
+  poi `mim-docenti-supplenti` (DOCSUP + DOCSUPXXV).
+- motivo: ATASUP è un clone semplice di `mim-personale-ata` (stesso periodo,
+  stesso pattern file, in più `TIPOSUPPLENZA`); DOCSUP richiede l'unione di due
+  serie con schema diverso ed è il pezzo più delicato.
+- impatto: la quota supplenti sul totale ATA per provincia arriverà con il
+  compose `personale-scuola`; `DOCSUP` 2016-2022 vs 2023-2024 non è
+  perfettamente comparabile (la fonte cambia il conteggio di spezzoni e
+  finalizzati al ruolo) e andrà dichiarato.

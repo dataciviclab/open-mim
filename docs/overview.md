@@ -13,6 +13,7 @@ cittadinanza**, con un'**anagrafica scuole** condivisa come chiave di join.
 |---|---|---|
 | `mim-docenti-titolari` | provincia × ordine × tipo posto × fascia d'età | 2016/17–2024/25 |
 | `mim-personale-ata` | provincia × fascia d'età | 2016/17–2024/25 |
+| `mim-personale-ata-supplenti` | provincia × tipo supplenza × fascia d'età | 2016/17–2024/25 |
 | `mim-alunni-corso-eta` | scuola × ordine × anno di corso × fascia d'età | 2016/17–2024/25 |
 | `mim-scuola-infanzia` | scuola × cittadinanza | 2017/18–2024/25 |
 | `support/mim-anagrafica-scuole-statali` | scuola (anagrafica) | 2024/25 |

@@ -39,6 +39,17 @@ d'età. Anni di run = anno di inizio a.s. (2016 → a.s. 2016/17).
 
 Eccezione: 2020/21 → `ATATIT20202120200901.csv` (non `...20210831.csv`).
 
+### `mim-personale-ata-supplenti` — `ATASUP`
+
+Personale ATA supplente, scuola statale, per provincia, tipo supplenza e fascia
+d'età. Anni di run = anno di inizio a.s. (2016 → a.s. 2016/17).
+
+| Anno | File |
+|---|---|
+| 2016–2024 | `ATASUP20161720170831.csv` … `ATASUP20242520250831.csv` |
+
+Eccezione: 2020/21 → `ATASUP20202120200901.csv`.
+
 ### `mim-alunni-corso-eta` — `ALUCORSOETASTA`
 
 Alunni per ordine, anno di corso e fascia d'età, scuola statale. Anni di run =

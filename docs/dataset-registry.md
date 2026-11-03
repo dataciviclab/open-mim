@@ -12,6 +12,7 @@ mappa leggibile per chi lavora nel repo.
 |---|---|---|---|
 | `mim-docenti-titolari` | MIM `DOCTIT` | 2016–2024 (a.s. 2016/17–2024/25) | provincia × ordine × tipo posto × fascia d'età |
 | `mim-personale-ata` | MIM `ATATIT` | 2016–2024 (a.s. 2016/17–2024/25) | provincia × fascia d'età |
+| `mim-personale-ata-supplenti` | MIM `ATASUP` | 2016–2024 (a.s. 2016/17–2024/25) | provincia × tipo supplenza × fascia d'età |
 | `mim-alunni-corso-eta` | MIM `ALUCORSOETASTA` | 2016–2025 (a.s. 2015/16–2024/25) | scuola × ordine × anno di corso × fascia d'età |
 | `mim-scuola-infanzia` | MIM `INFANZIASTRACITSTA` | 2018–2025 (a.s. 2017/18–2024/25) | scuola × cittadinanza |
 | `support/mim-anagrafica-scuole-statali` | MIM `SCUANAGRAFESTAT` | 2024 (a.s. 2024/25) | scuola (`CODICESCUOLA`) |
@@ -27,6 +28,10 @@ mappa leggibile per chi lavora nel repo.
 | `mart_sintesi_provincia` | `mim-personale-ata` | anno × provincia | totale ATA, quota di genere, quota nazionale |
 | `mart_trend_anno` | `mim-personale-ata` | anno (multi-anno) | serie storica ATA e variazioni |
 | `mart_fasce_eta` | `mim-personale-ata` | anno × fascia d'età | invecchiamento del personale ATA |
+| `mart_sintesi_provincia` | `mim-personale-ata-supplenti` | anno × provincia | totale supplenti ATA, quota di genere, quota nazionale |
+| `mart_trend_anno` | `mim-personale-ata-supplenti` | anno (multi-anno) | serie storica supplenti ATA |
+| `mart_fasce_eta` | `mim-personale-ata-supplenti` | anno × fascia d'età | età dei supplenti ATA |
+| `mart_tipologia` | `mim-personale-ata-supplenti` | anno × tipo supplenza | annuale vs fino al termine |
 | `mart_trend_ordine` | `mim-alunni-corso-eta` | anno_scolastico × ordine (multi-anno) | calo iscrizioni per ordine |
 | `mart_sintesi_regione` | `mim-alunni-corso-eta` | regione × ordine | quota nazionale alunni |
 | `mart_ripetenti_provincia` | `mim-alunni-corso-eta` | provincia × ordine | alunni in età non allineata al corso |

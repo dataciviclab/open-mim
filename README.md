@@ -24,6 +24,7 @@ Le domande secondarie emergono in Discussions e diventano issue operative.
 |---|---|---|---|
 | [`datasets/mim-docenti-titolari`](datasets/mim-docenti-titolari/) | Docenti a tempo indeterminato per provincia, ordine scolastico, tipo posto e fascia d'età | 2016/17–2024/25 | alpha |
 | [`datasets/mim-personale-ata`](datasets/mim-personale-ata/) | Personale ATA a tempo indeterminato per provincia e fascia d'età | 2016/17–2024/25 | alpha |
+| [`datasets/mim-personale-ata-supplenti`](datasets/mim-personale-ata-supplenti/) | Personale ATA supplente per provincia, tipo supplenza e fascia d'età | 2016/17–2024/25 | alpha |
 | [`datasets/mim-alunni-corso-eta`](datasets/mim-alunni-corso-eta/) | Alunni per ordine, anno di corso ed età, per singola scuola e territorio | 2016/17–2024/25 | alpha |
 | [`datasets/mim-scuola-infanzia`](datasets/mim-scuola-infanzia/) | Bambini italiani e non italiani nella scuola dell'infanzia, per scuola e territorio | 2017/18–2024/25 | alpha |
 | [`support/mim-anagrafica-scuole-statali`](support/mim-anagrafica-scuole-statali/) | Anagrafica scuole statali: chiave di join geografico per gli altri dataset | 2024/25 | support |
