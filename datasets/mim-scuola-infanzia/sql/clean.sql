@@ -16,7 +16,7 @@ WITH bambini AS (
 ),
 scuole AS (
     SELECT *
-    FROM read_parquet('{support.scu_anagrafica_statali.mart}')
+    FROM read_parquet('{support.scu_anagrafica_statali.clean}')
 )
 SELECT
     b.anno_scolastico,
@@ -34,4 +34,6 @@ SELECT
     s.codice_comune_scuola,
     s.denominazione_istituto_riferimento
 FROM bambini b
-LEFT JOIN scuole s ON b.codice_scuola = s.codice_scuola
+LEFT JOIN scuole s
+    ON b.codice_scuola = s.codice_scuola
+   AND b.anno_scolastico = s.anno_scolastico

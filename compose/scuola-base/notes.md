@@ -27,6 +27,16 @@ con il Makefile che esegue i dataset prima del compose. Da sostituire con
 - `mim-docenti-titolari` e `mim-personale-ata` hanno già `anno` = inizio a.s.
 - filtro esplicito `anno BETWEEN 2016 AND 2024`
 
+## Normalizzazione province
+
+- il mapping `mapping/province-mim.csv` è applicato a **entrambi i lati**
+  (anagrafica/alunni e docenti/ATA) prima del join
+- l'anagrafica è processata per anno (2015/16–2024/25) e il join è su
+  `anno_scolastico` + `codice_scuola`
+- copre 11 varianti storiche; `OGLIASTRA` → `NUORO` e `OLBIA-TEMPIO` →
+  `SASSARI` sono approssimazioni
+- residuo: l'infanzia 2016/17 non esiste (serie dal 2017/18)
+
 ## Scelte
 
 - il mart per ordine parte dai **docenti** (4 ordini): così l'infanzia è
@@ -39,9 +49,11 @@ con il Makefile che esegue i dataset prima del compose. Da sostituire con
 
 ## Verifica (2024/25)
 
-- `mart_scuola_ordine`: 3.768 righe (9 anni × ~104 province × 4 ordini)
-- `mart_scuola_provincia`: ~925 righe (9 anni × ~103 province)
+- `mart_scuola_ordine`: 3.744 righe (9 anni × 104 province × 4 ordini)
+- `mart_scuola_provincia`: 936 righe (9 anni × 104 province)
 - totale docenti 2024 = 739.581, allineato a `mim-docenti-titolari`
 - totale alunni 2024 = 6.940.973 (include infanzia ~768k)
 - rapporto alunni/docenti aggregato 2024 = 9,39
-- 2016/17 non confrontabile: infanzia assente (alunni NULL)
+- copertura provincia: 0 righe senza provincia in tutti gli anni (dopo
+  anagrafica per anno); nel 2016/17 restano 104 righe infanzia con `alunni`
+  NULL perché la fonte infanzia parte dal 2017/18

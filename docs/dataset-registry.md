@@ -15,7 +15,7 @@ mappa leggibile per chi lavora nel repo.
 | `mim-personale-ata-supplenti` | MIM `ATASUP` | 2016–2024 (a.s. 2016/17–2024/25) | provincia × tipo supplenza × fascia d'età |
 | `mim-alunni-corso-eta` | MIM `ALUCORSOETASTA` | 2016–2025 (a.s. 2015/16–2024/25) | scuola × ordine × anno di corso × fascia d'età |
 | `mim-scuola-infanzia` | MIM `INFANZIASTRACITSTA` | 2018–2025 (a.s. 2017/18–2024/25) | scuola × cittadinanza |
-| `support/mim-anagrafica-scuole-statali` | MIM `SCUANAGRAFESTAT` | 2024 (a.s. 2024/25) | scuola (`CODICESCUOLA`) |
+| `support/mim-anagrafica-scuole-statali` | MIM `SCUANAGRAFESTAT` | 2015–2024 (a.s. 2015/16–2024/25) | scuola × anno (`CODICESCUOLA`) |
 | `compose/scuola-base` | composizione | 2016–2024 | provincia × ordine / provincia |
 
 ## Mart
@@ -39,7 +39,9 @@ mappa leggibile per chi lavora nel repo.
 | `mart_trend_cittadinanza` | `mim-scuola-infanzia` | anno_scolastico (multi-anno) | serie italiani/non italiani e quota stranieri |
 | `mart_sintesi_regione` | `mim-scuola-infanzia` | regione | divari regionali nella presenza straniera |
 | `mart_comune` | `mim-scuola-infanzia` | comune | dettaglio comunale, quota provinciale |
-| `mart_scuole_statali_geo` | `support/mim-anagrafica-scuole-statali` | scuola | anagrafica geografica per join |
+| `mart_scuole_statali_geo` | `support/mim-anagrafica-scuole-statali` | scuola × anno | anagrafica geografica per join |
+
+Mapping province: `mapping/province-mim.csv` (file statico, non un dataset né un mart).
 | `mart_scuola_ordine` | `compose/scuola-base` | anno × provincia × ordine | alunni + docenti, rapporto e quote |
 | `mart_scuola_provincia` | `compose/scuola-base` | anno × provincia | alunni + docenti + ATA, rapporti |
 

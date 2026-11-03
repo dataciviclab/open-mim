@@ -28,6 +28,9 @@ support:
   - name: infanzia
     type: file
     path: "../../out/data/clean/mim_scuola_infanzia"
+  - name: province
+    type: file
+    path: "../../mapping/province-mim.csv"
 
 mart:
   tables:

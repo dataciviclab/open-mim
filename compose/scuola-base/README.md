@@ -31,8 +31,9 @@ Così le tre fonti si allineano sullo stesso anno scolastico.
   alunni/docenti (quello è nella colonna dedicata)
 - l'infanzia parte dal 2017/18: nel 2016/17 le righe infanzia hanno `alunni`
   NULL e il totale aggregato non è confrontabile con gli anni successivi
-- 9 nomi provincia storici nei docenti (2016-17, ~2,7% dei docenti) non
-  coincidono con l'anagrafica 2024/25; per quelle province `alunni` è NULL
+- i nomi provincia storici sono normalizzati con `mapping/province-mim.csv`
+  (applicato a entrambi i lati); `OGLIASTRA` → `NUORO` e `OLBIA-TEMPIO` →
+  `SASSARI` sono approssimazioni
 
 ## Comandi
 

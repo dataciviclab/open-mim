@@ -140,3 +140,21 @@ Qui registriamo scelte tecniche che cambiano il significato dei dati.
   compose `personale-scuola`; `DOCSUP` 2016-2022 vs 2023-2024 non è
   perfettamente comparabile (la fonte cambia il conteggio di spezzoni e
   finalizzati al ruolo) e andrà dichiarato.
+
+## D-014 — Anagrafica per anno e normalizzazione province
+
+- decisione: l'anagrafica scuole statali è processata **per anno** (a.s.
+  2015/16 → 2024/25, come la fonte `SCUANAGRAFESTAT`) e il join con alunni e
+  infanzia è su `anno_scolastico` + `codice_scuola`. I nomi provincia sono
+  normalizzati con il file statico `mapping/province-mim.csv`, applicato a
+  entrambi i lati del join nel compose.
+- motivo: usare solo l'anagrafica 2024/25 lasciava senza provincia il 16,5%
+  degli alunni nel 2015/16 e il 5,8% nel 2023/24 (i codici scuola cambiano nel
+  tempo). Gli snapshot annuali coprono i codici dell'anno: il 2015/16 ha
+  51.122 scuole e 107 province, di cui 10.147 codici assenti nel 2024/25.
+- impatto: niente master cumulativo — si segue la fonte. Il mapping è un file
+  (`mapping/province-mim.csv`), non un dataset: non entra nel registry.
+  Varianti coperte: 11 (8 dall'anagrafica storica + 3 dai dati personale).
+  `OGLIASTRA` → `NUORO` e `OLBIA-TEMPIO` → `SASSARI` sono approssimazioni: i
+  territori sono stati ridistribuiti tra più province. Per analisi fini serve
+  una mappatura comunale.

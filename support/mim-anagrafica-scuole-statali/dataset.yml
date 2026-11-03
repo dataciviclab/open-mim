@@ -6,15 +6,31 @@ dataset:
   source_id: "mim_opendata"
   tags: [istruzione, mim, anagrafica, scuole, statali]
   category: istruzione
-  years: [2024]
+  years: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  time_coverage: {start_year: 2015, end_year: 2024}
 
 raw:
+  output_policy: overwrite
   sources:
     - name: "mim_anagrafica_scuole_csv"
       type: "http_file"
+      client:
+        timeout: 60
+        retries: 2
       args:
-        url: "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFESTAT20242520250831.csv"
-        filename: "SCUANAGRAFESTAT20242520250831.csv"
+        url: "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/SCUANAGRAFESTAT"
+        filename: "SCUANAGRAFESTAT_{year}.csv"
+        url_suffix_by_year:
+          2015: "20151620160831.csv"
+          2016: "20161720170831.csv"
+          2017: "20171820170901.csv"
+          2018: "20181920190831.csv"
+          2019: "20192020200831.csv"
+          2020: "20202120210831.csv"
+          2021: "20212220220831.csv"
+          2022: "20222320230831.csv"
+          2023: "20232420240831.csv"
+          2024: "20242520250831.csv"
       primary: true
 
 clean:
@@ -31,8 +47,8 @@ clean:
   required_columns: [anno_scolastico, codice_scuola, denominazione_scuola, area_geografica, regione, provincia, comune, codice_comune_scuola, grado_istruzione_scuola]
   validate:
     not_null: [codice_scuola, anno_scolastico]
-    primary_key: [codice_scuola]
-    min_rows: 1000
+    primary_key: [codice_scuola, anno_scolastico]
+    min_rows: 50000
 
 mart:
   tables:
@@ -44,8 +60,8 @@ mart:
     table_rules:
       mart_scuole_statali_geo:
         required_columns: [anno_scolastico, codice_scuola, regione, provincia, comune, codice_comune_scuola]
-        primary_key: [codice_scuola]
-        min_rows: 1000
+        primary_key: [codice_scuola, anno_scolastico]
+        min_rows: 50000
 
 validation:
   fail_on_error: true

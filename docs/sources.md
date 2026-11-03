@@ -71,11 +71,14 @@ Bambini italiani e non italiani nella scuola dell'infanzia statale.
 
 ### `support/mim-anagrafica-scuole-statali` — `SCUANAGRAFESTAT`
 
-Anagrafica degli edifici scolastici statali (chiave `CODICESCUOLA`).
+Anagrafica degli edifici scolastici statali (chiave `CODICESCUOLA`), uno
+snapshot per anno scolastico.
 
 | Anno | File |
 |---|---|
-| 2024 | `SCUANAGRAFESTAT20242520250831.csv` |
+| 2015–2024 | `SCUANAGRAFESTAT20151620160831.csv` … `SCUANAGRAFESTAT20242520250831.csv` |
+
+Eccezioni nel nome file: 2017/18 → `...20171820170901.csv`.
 
 ## Versioning
 

@@ -255,6 +255,15 @@ def test_compose_docs_present(compose_configs: list[Path]) -> None:
 
 
 @pytest.mark.contract
+def test_province_mapping_present() -> None:
+    mapping = REPO_ROOT / "mapping" / "province-mim.csv"
+    assert mapping.is_file(), "manca mapping/province-mim.csv"
+    lines = mapping.read_text(encoding="utf-8").strip().splitlines()
+    assert len(lines) >= 12, "mapping province: attese header + almeno 11 varianti"
+    assert lines[0].split(",")[:2] == ["provincia_mim", "provincia_normalizzata"]
+
+
+@pytest.mark.contract
 def test_no_run_outputs_committed() -> None:
     """Nessun output di run deve essere tracciato da git (out/ è gitignored)."""
     try:

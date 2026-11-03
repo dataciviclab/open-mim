@@ -6,18 +6,23 @@
 -- L'anno è l'inizio dell'anno scolastico: per alunni/infanzia è derivato da
 -- anno_scolastico ("201617" -> 2016), per i docenti è già la colonna anno.
 --
--- Il join parte dai docenti (4 ordini): l'infanzia copre 2017/18-2024/25,
--- quindi nel 2016/17 la riga infanzia ha alunni NULL.
+-- I nomi provincia (anagrafica storica e docenti) sono normalizzati con il
+-- mapping statico mapping/province-mim.csv su ENTRAMBI i lati del join.
 
-WITH alunni_raw AS (
+WITH province AS (
+    SELECT provincia_mim, provincia_normalizzata
+    FROM read_csv('{support.province.path}', header=true, delim=',')
+),
+alunni_raw AS (
     SELECT
-        CAST(SUBSTR(anno_scolastico, 1, 4) AS INTEGER) AS anno,
-        provincia,
-        ordine_scuola,
-        alunni,
-        codice_scuola
-    FROM read_parquet('{support.alunni.path}/*/*_clean.parquet')
-    WHERE provincia IS NOT NULL
+        CAST(SUBSTR(a.anno_scolastico, 1, 4) AS INTEGER) AS anno,
+        COALESCE(p.provincia_normalizzata, a.provincia) AS provincia,
+        a.ordine_scuola,
+        a.alunni,
+        a.codice_scuola
+    FROM read_parquet('{support.alunni.path}/*/*_clean.parquet') a
+    LEFT JOIN province p ON a.provincia = p.provincia_mim
+    WHERE a.provincia IS NOT NULL
 ),
 alunni AS (
     SELECT
@@ -32,13 +37,14 @@ alunni AS (
 ),
 infanzia_raw AS (
     SELECT
-        CAST(SUBSTR(anno_scolastico, 1, 4) AS INTEGER) AS anno,
-        provincia,
+        CAST(SUBSTR(i.anno_scolastico, 1, 4) AS INTEGER) AS anno,
+        COALESCE(p.provincia_normalizzata, i.provincia) AS provincia,
         'SCUOLA INFANZIA' AS ordine_scuola,
-        bambini_totale AS alunni,
-        codice_scuola
-    FROM read_parquet('{support.infanzia.path}/*/*_clean.parquet')
-    WHERE provincia IS NOT NULL
+        i.bambini_totale AS alunni,
+        i.codice_scuola
+    FROM read_parquet('{support.infanzia.path}/*/*_clean.parquet') i
+    LEFT JOIN province p ON i.provincia = p.provincia_mim
+    WHERE i.provincia IS NOT NULL
 ),
 infanzia AS (
     SELECT
@@ -56,6 +62,17 @@ domanda AS (
     UNION ALL
     SELECT * FROM infanzia
 ),
+docenti_raw AS (
+    SELECT
+        d.anno,
+        COALESCE(p.provincia_normalizzata, d.provincia) AS provincia,
+        d.ordine_scuola,
+        d.docenti_totale,
+        d.docenti_femminile,
+        d.fascia_eta
+    FROM read_parquet('{support.docenti.path}/*/*_clean.parquet') d
+    LEFT JOIN province p ON d.provincia = p.provincia_mim
+),
 docenti AS (
     SELECT
         anno,
@@ -64,7 +81,7 @@ docenti AS (
         SUM(docenti_totale)    AS docenti_titolari,
         SUM(docenti_femminile) AS docenti_femminile,
         SUM(CASE WHEN fascia_eta = 'OLTRE 54' THEN docenti_totale ELSE 0 END) AS docenti_over54
-    FROM read_parquet('{support.docenti.path}/*/*_clean.parquet')
+    FROM docenti_raw
     GROUP BY anno, provincia, ordine_scuola
 )
 SELECT

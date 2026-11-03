@@ -17,7 +17,7 @@ WITH alunni AS (
 ),
 scuole AS (
     SELECT *
-    FROM read_parquet('{support.scu_anagrafica_statali.mart}')
+    FROM read_parquet('{support.scu_anagrafica_statali.clean}')
 )
 SELECT
     a.anno_scolastico,
@@ -37,4 +37,6 @@ SELECT
     s.cap_scuola,
     s.denominazione_istituto_riferimento
 FROM alunni a
-LEFT JOIN scuole s ON a.codice_scuola = s.codice_scuola
+LEFT JOIN scuole s
+    ON a.codice_scuola = s.codice_scuola
+   AND a.anno_scolastico = s.anno_scolastico

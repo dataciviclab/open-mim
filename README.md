@@ -27,7 +27,9 @@ Le domande secondarie emergono in Discussions e diventano issue operative.
 | [`datasets/mim-personale-ata-supplenti`](datasets/mim-personale-ata-supplenti/) | Personale ATA supplente per provincia, tipo supplenza e fascia d'età | 2016/17–2024/25 | alpha |
 | [`datasets/mim-alunni-corso-eta`](datasets/mim-alunni-corso-eta/) | Alunni per ordine, anno di corso ed età, per singola scuola e territorio | 2016/17–2024/25 | alpha |
 | [`datasets/mim-scuola-infanzia`](datasets/mim-scuola-infanzia/) | Bambini italiani e non italiani nella scuola dell'infanzia, per scuola e territorio | 2017/18–2024/25 | alpha |
-| [`support/mim-anagrafica-scuole-statali`](support/mim-anagrafica-scuole-statali/) | Anagrafica scuole statali: chiave di join geografico per gli altri dataset | 2024/25 | support |
+| [`support/mim-anagrafica-scuole-statali`](support/mim-anagrafica-scuole-statali/) | Anagrafica scuole statali per anno: chiave di join geografico | 2015/16–2024/25 | support |
+
+Mapping province storiche/varianti: [`mapping/province-mim.csv`](mapping/province-mim.csv) (file statico, non un dataset).
 | [`compose/scuola-base`](compose/scuola-base/) | Base analitica: alunni + docenti + ATA per provincia/ordine, con rapporti e quote | 2016/17–2024/25 | alpha |
 
 Roadmap (non ancora in contratto):
