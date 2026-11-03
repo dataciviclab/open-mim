@@ -1,0 +1,54 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "personale_scuola"
+  source_id: "dataciviclab_composite"
+  tags: [istruzione, scuola, compose, docenti, ata, supplenti, precariato]
+  category: istruzione
+  description: "Personale scolastico: docenti e ATA, titolari e supplenti, per provincia e ordine."
+  years: [2024]
+  time_coverage: {start_year: 2016, end_year: 2024}
+
+support:
+  - name: docenti_titolari
+    type: file
+    path: "../../out/data/clean/mim_docenti_titolari"
+  - name: docenti_supplenti
+    type: file
+    path: "../../out/data/clean/mim_docenti_supplenti"
+  - name: ata_titolari
+    type: file
+    path: "../../out/data/clean/mim_personale_ata"
+  - name: ata_supplenti
+    type: file
+    path: "../../out/data/clean/mim_personale_ata_supplenti"
+  - name: province
+    type: file
+    path: "../../mapping/province-mim.csv"
+
+mart:
+  tables:
+    - name: "mart_personale_ordine"
+      sql: "sql/mart_personale_ordine.sql"
+    - name: "mart_personale_provincia"
+      sql: "sql/mart_personale_provincia.sql"
+  required_tables:
+    - "mart_personale_ordine"
+    - "mart_personale_provincia"
+  validate:
+    table_rules:
+      mart_personale_ordine:
+        required_columns: [anno, provincia, ordine_scuola, docenti_titolari, docenti_supplenti, docenti_totali, quota_supplenti_docenti_pct, rapporto_titolari_supplenti]
+        primary_key: [anno, provincia, ordine_scuola]
+        min_rows: 100
+      mart_personale_provincia:
+        required_columns: [anno, provincia, docenti_titolari, docenti_supplenti, docenti_totali, ata_titolari, ata_supplenti, ata_totali, quota_supplenti_docenti_pct, quota_supplenti_ata_pct, quota_supplenti_personale_pct, rapporto_titolari_supplenti]
+        primary_key: [anno, provincia]
+        min_rows: 100
+
+validation:
+  fail_on_error: true
+
+output:
+  artifacts: "standard"

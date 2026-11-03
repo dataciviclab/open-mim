@@ -50,6 +50,19 @@ d'età. Anni di run = anno di inizio a.s. (2016 → a.s. 2016/17).
 
 Eccezione: 2020/21 → `ATASUP20202120200901.csv`.
 
+### `mim-docenti-supplenti` — `DOCSUP` + `DOCSUPXXV`
+
+Docenti supplenti, scuola statale, per provincia, ordine, tipo posto, tipo
+supplenza e fascia d'età.
+
+| Anno | File |
+|---|---|
+| 2016–2022 | `DOCSUP20161720170831.csv` … `DOCSUP20222320230831.csv` |
+| 2023–2024 | `DOCSUPXXV20232420240831.csv` … `DOCSUPXXV20242520250831.csv` |
+
+Dal 2023/24 il file aggiunge `CONTRATTOFINALRUOLO` e `CONTRATTOORARIOINTERO`.
+Eccezione 2020/21: `DOCSUP20202120200901.csv`.
+
 ### `mim-alunni-corso-eta` — `ALUCORSOETASTA`
 
 Alunni per ordine, anno di corso e fascia d'età, scuola statale. Anni di run =

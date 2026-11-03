@@ -154,7 +154,34 @@ Qui registriamo scelte tecniche che cambiano il significato dei dati.
   51.122 scuole e 107 province, di cui 10.147 codici assenti nel 2024/25.
 - impatto: niente master cumulativo — si segue la fonte. Il mapping è un file
   (`mapping/province-mim.csv`), non un dataset: non entra nel registry.
-  Varianti coperte: 11 (8 dall'anagrafica storica + 3 dai dati personale).
+  Varianti coperte: 14 (8 dall'anagrafica storica, 3 dai dati docenti e 3 forme
+  troncate negli ATA supplenti).
   `OGLIASTRA` → `NUORO` e `OLBIA-TEMPIO` → `SASSARI` sono approssimazioni: i
   territori sono stati ridistribuiti tra più province. Per analisi fini serve
   una mappatura comunale.
+
+## D-015 — Docenti supplenti: unione di due serie
+
+- decisione: `DOCSUP` (2016–2022, 8 colonne) e `DOCSUPXXV` (2023–2024, 10
+  colonne) vivono in **un solo dataset**. Il raw usa un'unica source con
+  `url_suffix_by_year` che elenca il nome file completo; il clean usa
+  `normalize_rows_to_columns` + `align_by_header` + `columns` per riempire con
+  NULL le due colonne contratto negli anni vecchi.
+- motivo: evitare due dataset e un compose solo per lo schema; il toolkit
+  supporta già l'allineamento per header.
+- impatto: la primary key del clean include `contratto_finalizzato_ruolo` e
+  `contratto_orario_intero` (dal 2023/24 il grano è più fine). `mart_contratti`
+  è vuoto prima del 2023/24. La serie 2016–2022 **non è perfettamente
+  comparabile** con 2023–2024: la fonte cambia il conteggio di spezzoni e
+  finalizzati al ruolo. Da dichiarare nelle analisi che attraversano il 2023.
+
+## D-016 — Compose personale-scuola
+
+- decisione: due mart, `mart_personale_ordine` (anno × provincia × ordine) e
+  `mart_personale_provincia` (anno × provincia), con support `file` sui clean
+  dei quattro dataset e mapping province applicato a tutti.
+- motivo: ATA non hanno `ordine_scuola`; tenere due grani espliciti evita di
+  spalmare l'organico ATA sugli ordini. Il mart provinciale è quello che
+  risponde alla domanda "quanto pesa il precariato".
+- impatto: quota supplenti docenti 14,6% (2016/17) → 24,3% (2024/25); il salto
+  2022→2023 riflette la discontinuità della fonte, non solo il fenomeno.

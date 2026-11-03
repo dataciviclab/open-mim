@@ -1,0 +1,124 @@
+root: "../../out"
+schema_version: 1
+
+dataset:
+  name: "mim_docenti_supplenti"
+  source_id: "mim_opendata"
+  tags: [istruzione, mim, docenti, supplenti, precariato, territorio]
+  category: istruzione
+  years: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+  time_coverage: {start_year: 2016, end_year: 2024}
+
+raw:
+  output_policy: overwrite
+  sources:
+    - name: "mim_docenti_supplenti_csv"
+      type: "http_file"
+      client:
+        timeout: 60
+        retries: 2
+      args:
+        url: "https://dati.istruzione.it/opendata/opendata/catalogo/elements1/"
+        filename: "docenti_supplenti_{year}.csv"
+        url_suffix_by_year:
+          2016: "DOCSUP20161720170831.csv"
+          2017: "DOCSUP20171820180831.csv"
+          2018: "DOCSUP20181920190831.csv"
+          2019: "DOCSUP20192020200831.csv"
+          2020: "DOCSUP20202120200901.csv"
+          2021: "DOCSUP20212220220831.csv"
+          2022: "DOCSUP20222320230831.csv"
+          2023: "DOCSUPXXV20232420240831.csv"
+          2024: "DOCSUPXXV20242520250831.csv"
+      primary: true
+
+clean:
+  sql: "sql/clean.sql"
+  read:
+    source: auto
+    mode: latest
+    delim: ","
+    encoding: "utf-8"
+    header: true
+    normalize_rows_to_columns: true
+    align_by_header: true
+    columns:
+      ANNOSCOLASTICO: VARCHAR
+      PROVINCIA: VARCHAR
+      ORDINESCUOLA: VARCHAR
+      TIPOPOSTO: VARCHAR
+      TIPOSUPPLENZA: VARCHAR
+      FASCIAETA: VARCHAR
+      CONTRATTOFINALRUOLO: VARCHAR
+      CONTRATTOORARIOINTERO: VARCHAR
+      DOCENTISUPPLENTIMASCHI: BIGINT
+      DOCENTISUPPLENTIFEMMINE: BIGINT
+  required_columns:
+    - anno
+    - anno_scolastico
+    - provincia
+    - ordine_scuola
+    - tipo_posto
+    - tipo_supplenza
+    - fascia_eta
+    - contratto_finalizzato_ruolo
+    - contratto_orario_intero
+    - docenti_supplenti_maschile
+    - docenti_supplenti_femminile
+    - docenti_supplenti_totale
+  validate:
+    not_null: [anno, provincia, ordine_scuola, fascia_eta]
+    primary_key: [anno, provincia, ordine_scuola, tipo_posto, tipo_supplenza, fascia_eta, contratto_finalizzato_ruolo, contratto_orario_intero]
+    min_rows: 1000
+
+mart:
+  tables:
+    # Sintesi territoriale per provincia x ordine (anno corrente)
+    - name: "mart_sintesi_provincia"
+      sql: "sql/mart_sintesi_provincia.sql"
+    # Serie storica multi-anno dei supplenti docenti
+    - name: "mart_trend_anno"
+      sql: "sql/mart_trend_anno.sql"
+      years: [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
+    # Distribuzione per tipo supplenza (anno corrente)
+    - name: "mart_tipologia"
+      sql: "sql/mart_tipologia.sql"
+    # Distribuzione per fascia d'età (anno corrente)
+    - name: "mart_fasce_eta"
+      sql: "sql/mart_fasce_eta.sql"
+    # Contratti finalizzati al ruolo / orario intero (solo dal 2023/24)
+    - name: "mart_contratti"
+      sql: "sql/mart_contratti.sql"
+  required_tables:
+    - "mart_sintesi_provincia"
+    - "mart_trend_anno"
+    - "mart_tipologia"
+    - "mart_fasce_eta"
+  validate:
+    table_rules:
+      mart_sintesi_provincia:
+        required_columns: [anno, provincia, ordine_scuola, docenti_supplenti_totale, quota_femminile_pct, quota_nazionale_pct]
+        primary_key: [anno, provincia, ordine_scuola]
+        min_rows: 100
+      mart_trend_anno:
+        required_columns: [anno, docenti_supplenti_totale, delta_docenti_supplenti, variazione_pct]
+        primary_key: [anno]
+        min_rows: 9
+      mart_tipologia:
+        required_columns: [anno, tipo_supplenza, docenti_supplenti_totale, quota_pct]
+        primary_key: [anno, tipo_supplenza]
+        min_rows: 2
+      mart_fasce_eta:
+        required_columns: [anno, fascia_eta, docenti_supplenti_totale, quota_pct]
+        primary_key: [anno, fascia_eta]
+        min_rows: 3
+      mart_contratti:
+        required_columns: [anno, contratto_finalizzato_ruolo, contratto_orario_intero, docenti_supplenti_totale, quota_pct]
+        primary_key: [anno, contratto_finalizzato_ruolo, contratto_orario_intero]
+        min_rows: 0
+
+validation:
+  fail_on_error: true
+
+output:
+  artifacts: "standard"

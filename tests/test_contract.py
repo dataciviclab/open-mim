@@ -45,13 +45,14 @@ def _iter_dataset_configs() -> list[Path]:
 
 EXPECTED_DATASETS = {
     "mim-alunni-corso-eta",
+    "mim-docenti-supplenti",
     "mim-docenti-titolari",
     "mim-personale-ata",
     "mim-personale-ata-supplenti",
     "mim-scuola-infanzia",
 }
 EXPECTED_SUPPORT = {"mim-anagrafica-scuole-statali"}
-EXPECTED_COMPOSE = {"scuola-base"}
+EXPECTED_COMPOSE = {"personale-scuola", "scuola-base"}
 
 
 def _iter_compose_configs() -> list[Path]:

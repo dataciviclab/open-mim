@@ -12,12 +12,14 @@ cittadinanza**, con un'**anagrafica scuole** condivisa come chiave di join.
 | Dataset | Unità di analisi | Anni |
 |---|---|---|
 | `mim-docenti-titolari` | provincia × ordine × tipo posto × fascia d'età | 2016/17–2024/25 |
+| `mim-docenti-supplenti` | provincia × ordine × tipo posto × tipo supplenza × fascia d'età | 2016/17–2024/25 |
 | `mim-personale-ata` | provincia × fascia d'età | 2016/17–2024/25 |
 | `mim-personale-ata-supplenti` | provincia × tipo supplenza × fascia d'età | 2016/17–2024/25 |
 | `mim-alunni-corso-eta` | scuola × ordine × anno di corso × fascia d'età | 2016/17–2024/25 |
 | `mim-scuola-infanzia` | scuola × cittadinanza | 2017/18–2024/25 |
 | `support/mim-anagrafica-scuole-statali` | scuola (anagrafica, per anno) | 2015/16–2024/25 |
 | `compose/scuola-base` | provincia × ordine / provincia | 2016/17–2024/25 |
+| `compose/personale-scuola` | provincia × ordine / provincia | 2016/17–2024/25 |
 
 ## Copertura
 
